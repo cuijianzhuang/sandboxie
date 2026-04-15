@@ -3028,19 +3028,39 @@ void CSandMan::RunAutoStartOnLogon()
 	for (auto I = Boxes.constBegin(); I != Boxes.constEnd(); ++I)
 	{
 		CSandBoxPtr pBox = I.value();
+		if (!pBox->GetBool("AutoStartOnLogonEnabled", false))
+			continue;
+
 		QStringList Commands = pBox->GetTextList("AutoStartOnLogon", false);
 		if (Commands.isEmpty())
 			continue;
 
 		QString BoxName = pBox->GetName();
-		foreach(const QString& Command, Commands)
+		int globalDelay = pBox->GetNum("AutoStartOnLogonDelay", 5);
+
+		foreach(const QString& RawEntry, Commands)
 		{
-			if (Command.trimmed().isEmpty())
+			if (RawEntry.trimmed().isEmpty())
 				continue;
-			OnLogMessage(tr("Auto-starting in sandbox '%1': %2").arg(BoxName).arg(Command));
-			SB_RESULT(quint32) result = RunStart(BoxName, Command);
-			if (result.IsError())
-				OnLogMessage(tr("Failed to auto-start '%1' in sandbox '%2': %3").arg(Command).arg(BoxName).arg(FormatError(result)), true);
+
+			QStringList Parts = RawEntry.split("|");
+			QString Command = Parts.value(0);
+			int perEntryDelay = Parts.value(2).toInt();
+			int delay = (perEntryDelay > 0) ? perEntryDelay : globalDelay;
+
+			if (delay > 0) {
+				QTimer::singleShot(delay * 1000, this, [this, BoxName, Command]() {
+					OnLogMessage(tr("Auto-starting in sandbox '%1': %2").arg(BoxName).arg(Command));
+					SB_RESULT(quint32) result = RunStart(BoxName, Command);
+					if (result.IsError())
+						OnLogMessage(tr("Failed to auto-start '%1' in sandbox '%2': %3").arg(Command).arg(BoxName).arg(FormatError(result)), true);
+				});
+			} else {
+				OnLogMessage(tr("Auto-starting in sandbox '%1': %2").arg(BoxName).arg(Command));
+				SB_RESULT(quint32) result = RunStart(BoxName, Command);
+				if (result.IsError())
+					OnLogMessage(tr("Failed to auto-start '%1' in sandbox '%2': %3").arg(Command).arg(BoxName).arg(FormatError(result)), true);
+			}
 		}
 	}
 }

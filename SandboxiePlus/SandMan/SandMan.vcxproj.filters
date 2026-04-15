@@ -105,6 +105,9 @@
     <ClCompile Include="Windows\OptionsAdvanced.cpp">
       <Filter>Windows</Filter>
     </ClCompile>
+    <ClCompile Include="Windows\OptionsAutoStart.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
     <ClCompile Include="Windows\OptionsForce.cpp">
       <Filter>Windows</Filter>
     </ClCompile>

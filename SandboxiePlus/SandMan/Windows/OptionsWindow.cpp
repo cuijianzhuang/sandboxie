@@ -635,6 +635,8 @@ COptionsWindow::COptionsWindow(const QSharedPointer<CSbieIni>& pBox, const QStri
 
 	CreateAdvanced();
 
+	CreateAutoStart();
+
 	// Templates
 	connect(ui.cmbCategories, SIGNAL(currentIndexChanged(int)), this, SLOT(OnFilterTemplates()));
 	connect(ui.txtTemplates, SIGNAL(textChanged(const QString&)), this, SLOT(OnFilterTemplates()));
@@ -713,6 +715,7 @@ COptionsWindow::COptionsWindow(const QSharedPointer<CSbieIni>& pBox, const QStri
 	//ui.treeAccess->viewport()->installEventFilter(this);
 	if(ui.treeOptions) ui.treeOptions->viewport()->installEventFilter(this);
 	ui.treeTriggers->viewport()->installEventFilter(this);
+	ui.treeAutoStart->viewport()->installEventFilter(this);
 	ui.treeHideProc->viewport()->installEventFilter(this);
 	ui.treeHostProc->viewport()->installEventFilter(this);
 	ui.lstUsers->viewport()->installEventFilter(this);
@@ -1102,6 +1105,7 @@ void COptionsWindow::LoadConfig()
 	LoadRecoveryList();
 
 	LoadAdvanced();
+	LoadAutoStart();
 	LoadDebug();
 	
 	UpdateBoxType();
@@ -1249,6 +1253,8 @@ void COptionsWindow::SaveConfig()
 
 		if (m_AdvancedChanged)
 			SaveAdvanced();
+		if (m_AutoStartChanged)
+			SaveAutoStart();
 		SaveDebug();
 
 		if (m_TemplatesChanged)
@@ -1334,7 +1340,8 @@ void COptionsWindow::reject()
 	 || m_TemplatesChanged
 	 || m_FoldersChanged
 	 || m_RecoveryChanged
-	 || m_AdvancedChanged)
+	 || m_AdvancedChanged
+	 || m_AutoStartChanged)
 	{
 		if (QMessageBox("Sandboxie-Plus", tr("Some changes haven't been saved yet, do you really want to close this options window?")
 		, QMessageBox::Warning, QMessageBox::Yes | QMessageBox::Default, QMessageBox::No | QMessageBox::Escape, QMessageBox::NoButton, this).exec() != QMessageBox::Yes)
@@ -1785,6 +1792,7 @@ void COptionsWindow::SaveIniSection()
 
 #include "OptionsAccess.cpp"
 #include "OptionsAdvanced.cpp"
+#include "OptionsAutoStart.cpp"
 #include "OptionsForce.cpp"
 #include "OptionsGeneral.cpp"
 #include "OptionsGrouping.cpp"

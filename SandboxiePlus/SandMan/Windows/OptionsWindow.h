@@ -225,6 +225,16 @@ private slots:
 	void OnAddLogonCmd();
 	void OnDelAuto();
 
+	// auto start
+	void OnAutoStartEnabledChanged()	{ m_AutoStartChanged = true; OnOptChanged(); }
+	void OnAddAutoStartEntry();
+	void OnBrowseAutoStartExe();
+	void OnAutoStartFromStartMenu();
+	void OnAutoStartMoveUp();
+	void OnAutoStartMoveDown();
+	void OnDelAutoStartEntry();
+	void OnAutoStartDelayChanged()	{ m_AutoStartChanged = true; OnOptChanged(); }
+
 	void OnDumpFW();
 
 	void OnAddProcess();
@@ -532,6 +542,11 @@ protected:
 	void AddRecIgnoreEntry(const QString& Name, const QString& Template = QString());
 	void SaveRecoveryList();
 
+	// auto start
+	void CreateAutoStart();
+	void LoadAutoStart();
+	void SaveAutoStart();
+
 	// advanced 
 	void CreateAdvanced();
 	void LoadAdvanced();
@@ -607,6 +622,7 @@ protected:
 	bool m_FoldersChanged;
 	bool m_RecoveryChanged;
 	bool m_AdvancedChanged;
+	bool m_AutoStartChanged;
 
 	bool m_WFPisBlocking;
 

@@ -5101,6 +5101,267 @@ This is done to prevent rogue processes inside the sandbox from creating a renam
              </item>
             </layout>
            </widget>
+           <widget class="QWidget" name="tabAutoStart">
+            <attribute name="title">
+             <string>Auto Start</string>
+            </attribute>
+            <layout class="QGridLayout" name="gridLayout_AutoStart">
+             <property name="leftMargin">
+              <number>3</number>
+             </property>
+             <property name="topMargin">
+              <number>6</number>
+             </property>
+             <property name="rightMargin">
+              <number>3</number>
+             </property>
+             <property name="bottomMargin">
+              <number>3</number>
+             </property>
+             <item row="0" column="0" colspan="3">
+              <widget class="QLabel" name="lblAutoStartDesc">
+               <property name="text">
+                <string>Configure programs to automatically run sandboxed when the user logs on to Windows. SandMan must be set to auto-start with Windows.</string>
+               </property>
+               <property name="wordWrap">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0" colspan="2">
+              <widget class="QCheckBox" name="chkAutoStartEnabled">
+               <property name="text">
+                <string>Enable Auto Start for this sandbox</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="0" rowspan="8">
+              <widget class="QTreeWidget" name="treeAutoStart">
+               <property name="alternatingRowColors">
+                <bool>true</bool>
+               </property>
+               <property name="rootIsDecorated">
+                <bool>false</bool>
+               </property>
+               <property name="sortingEnabled">
+                <bool>false</bool>
+               </property>
+               <column>
+                <property name="text">
+                 <string>Program</string>
+                </property>
+               </column>
+               <column>
+                <property name="text">
+                 <string>Command Line</string>
+                </property>
+               </column>
+               <column>
+                <property name="text">
+                 <string>Working Directory</string>
+                </property>
+               </column>
+               <column>
+                <property name="text">
+                 <string>Delay (sec)</string>
+                </property>
+               </column>
+              </widget>
+             </item>
+             <item row="2" column="1">
+              <widget class="QToolButton" name="btnAddAutoStartEntry">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>23</height>
+                </size>
+               </property>
+               <property name="toolTip">
+                <string>Add a program by entering its command line</string>
+               </property>
+               <property name="text">
+                <string>Add Command</string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="1">
+              <widget class="QToolButton" name="btnBrowseAutoStartExe">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>23</height>
+                </size>
+               </property>
+               <property name="toolTip">
+                <string>Browse for an executable inside the sandbox</string>
+               </property>
+               <property name="text">
+                <string>Browse...</string>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="1">
+              <widget class="QToolButton" name="btnAutoStartFromStartMenu">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>23</height>
+                </size>
+               </property>
+               <property name="toolTip">
+                <string>Pick from programs installed in this sandbox's start menu</string>
+               </property>
+               <property name="text">
+                <string>From Start Menu</string>
+               </property>
+              </widget>
+             </item>
+             <item row="5" column="1">
+              <spacer name="autoStartSpacer1">
+               <property name="orientation">
+                <enum>Qt::Orientation::Vertical</enum>
+               </property>
+               <property name="sizeType">
+                <enum>QSizePolicy::Policy::Fixed</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>20</width>
+                 <height>10</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item row="6" column="1">
+              <widget class="QToolButton" name="btnAutoStartMoveUp">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>23</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>Move Up</string>
+               </property>
+              </widget>
+             </item>
+             <item row="7" column="1">
+              <widget class="QToolButton" name="btnAutoStartMoveDown">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>23</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>Move Down</string>
+               </property>
+              </widget>
+             </item>
+             <item row="8" column="1">
+              <spacer name="autoStartSpacer2">
+               <property name="orientation">
+                <enum>Qt::Orientation::Vertical</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>20</width>
+                 <height>40</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item row="9" column="1">
+              <widget class="QToolButton" name="btnDelAutoStartEntry">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>23</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>Remove</string>
+               </property>
+              </widget>
+             </item>
+             <item row="10" column="0" colspan="2">
+              <layout class="QHBoxLayout" name="autoStartDelayLayout">
+               <item>
+                <widget class="QLabel" name="lblAutoStartDelay">
+                 <property name="text">
+                  <string>Global startup delay (seconds):</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QSpinBox" name="spinAutoStartDelay">
+                 <property name="minimum">
+                  <number>0</number>
+                 </property>
+                 <property name="maximum">
+                  <number>600</number>
+                 </property>
+                 <property name="value">
+                  <number>5</number>
+                 </property>
+                 <property name="toolTip">
+                  <string>Wait this many seconds after logon before starting sandboxed programs</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <spacer name="autoStartDelaySpacer">
+                 <property name="orientation">
+                  <enum>Qt::Orientation::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </widget>
            <widget class="QWidget" name="tabProcesses">
             <attribute name="title">
              <string>Processes</string>
