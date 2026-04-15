@@ -156,6 +156,7 @@ protected:
 	int					m_uTimerID;
 	bool				m_bConnectPending;
 	bool				m_bStopPending;
+	bool				m_bAutoStartOnLogonDone;
 	CBoxBorder*			m_pBoxBorder;
 	CSbieTemplatesEx*	m_SbieTemplates;
 
@@ -292,6 +293,8 @@ private slots:
 	void				AddFileRecovered(const QString& BoxName, const QString& FilePath);
 
 	void				commitData(QSessionManager& manager);
+
+	void				RunAutoStartOnLogon();
 
 private:
 

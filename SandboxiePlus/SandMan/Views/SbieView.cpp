@@ -308,6 +308,7 @@ void CSbieView::CreateMenu()
 		m_pMenuMarkLinger->setCheckable(true);
 		m_pMenuMarkLeader = m_pMenuPreset->addAction(tr("Set Leader Process"), this, SLOT(OnProcessAction()));
 		m_pMenuMarkLeader->setCheckable(true);
+		m_pMenuAutoStartOnLogon = m_pMenuPreset->addAction(tr("Auto-start on Logon"), this, SLOT(OnProcessAction()));
 	m_pMenuSuspend = m_pMenuProcess->addAction(tr("Suspend"), this, SLOT(OnProcessAction()));
 	m_pMenuResume = m_pMenuProcess->addAction(tr("Resume"), this, SLOT(OnProcessAction()));
 }
@@ -458,6 +459,7 @@ void CSbieView::CreateOldMenu()
 		m_pMenuMarkForced = NULL;
 		m_pMenuMarkLinger = NULL;
 		m_pMenuMarkLeader = NULL;
+		m_pMenuAutoStartOnLogon = NULL;
 	m_pMenuSuspend = NULL;
 	m_pMenuResume = NULL;
 }
@@ -2061,6 +2063,12 @@ void CSbieView::OnProcessAction(QAction* Action, const QList<CBoxedProcessPtr>& 
 			pProcess.objectCast<CSbieProcess>()->SetLingeringProgram(m_pMenuMarkLinger->isChecked());
 		else if (Action == m_pMenuMarkLeader)
 			pProcess.objectCast<CSbieProcess>()->SetLeaderProgram(m_pMenuMarkLeader->isChecked());
+		else if (Action == m_pMenuAutoStartOnLogon)
+		{
+			CSandBoxPlus* pBoxPlus = pProcess.objectCast<CSbieProcess>()->GetBox();
+			QString Command = pBoxPlus->MakeBoxCommand(pProcess->GetFileName());
+			pBoxPlus->AppendText("AutoStartOnLogon", Command);
+		}
 		else if (Action == m_pMenuSuspend)
 			Results.append(pProcess->SetSuspended(true));
 		else if (Action == m_pMenuResume)

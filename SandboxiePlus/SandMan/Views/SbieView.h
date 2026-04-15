@@ -235,6 +235,7 @@ private:
 	QAction*				m_pMenuMarkLinger;
 	QAction*				m_pMenuMarkLeader;
 	QAction*				m_pMenuPinToRun;
+	QAction*				m_pMenuAutoStartOnLogon;
 	QAction*				m_pMenuSuspend;
 	QAction*				m_pMenuResume;
 

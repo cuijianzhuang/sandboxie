@@ -112,6 +112,7 @@ void COptionsWindow::CreateAdvanced()
 	connect(ui.btnAddAutoRun, SIGNAL(clicked(bool)), this, SLOT(OnAddAutoRun()));
 	connect(ui.btnAddAutoSvc, SIGNAL(clicked(bool)), this, SLOT(OnAddAutoSvc()));
 	connect(ui.btnAddAutoExec, SIGNAL(clicked(bool)), this, SLOT(OnAddAutoExec()));
+	connect(ui.btnAddLogonCmd, SIGNAL(clicked(bool)), this, SLOT(OnAddLogonCmd()));
 	connect(ui.btnAddRecoveryCmd, SIGNAL(clicked(bool)), this, SLOT(OnAddRecoveryCheck()));
 	connect(ui.btnAddDeleteCmd, SIGNAL(clicked(bool)), this, SLOT(OnAddDeleteCmd()));
 	connect(ui.btnAddTerminateCmd, SIGNAL(clicked(bool)), this, SLOT(OnAddTerminateCmd()));
@@ -322,6 +323,8 @@ void COptionsWindow::LoadAdvanced()
 		AddTriggerItem(Value, eDeleteCmd);
 	foreach(const QString & Value, m_pBox->GetTextList("OnBoxTerminate", m_Template))
 		AddTriggerItem(Value, eTerminateCmd);
+	foreach(const QString & Value, m_pBox->GetTextList("AutoStartOnLogon", m_Template))
+		AddTriggerItem(Value, eOnLogonCmd);
 
 	foreach(const QString & Value, m_pBox->GetTextList("StartProgramDisabled", m_Template))
 		AddTriggerItem(Value, eOnStartCmd, true);
@@ -335,6 +338,8 @@ void COptionsWindow::LoadAdvanced()
 		AddTriggerItem(Value, eDeleteCmd, true);
 	foreach(const QString & Value, m_pBox->GetTextList("OnBoxTerminateDisabled", m_Template))
 		AddTriggerItem(Value, eTerminateCmd, true);
+	foreach(const QString & Value, m_pBox->GetTextList("AutoStartOnLogonDisabled", m_Template))
+		AddTriggerItem(Value, eOnLogonCmd, true);
 
 	ShowTriggersTmpl();
 	//
@@ -421,6 +426,8 @@ void COptionsWindow::ShowTriggersTmpl(bool bUpdate)
 				AddTriggerItem(Value, eDeleteCmd, false, Template);
 			foreach(const QString & Value, m_pBox->GetTextListTmpl("OnBoxTerminate", Template))
 				AddTriggerItem(Value, eTerminateCmd, false, Template);
+			foreach(const QString & Value, m_pBox->GetTextListTmpl("AutoStartOnLogon", Template))
+				AddTriggerItem(Value, eOnLogonCmd, false, Template);
 		}
 	}
 	else if (bUpdate)
@@ -590,6 +597,7 @@ void COptionsWindow::SaveAdvanced()
 	QStringList DeleteCommand;
 	QStringList AutoExec;
 	QStringList TerminateCommand;
+	QStringList LogonCommand;
 
 	QStringList StartProgramDisabled;
 	QStringList StartServiceDisabled;
@@ -597,6 +605,7 @@ void COptionsWindow::SaveAdvanced()
 	QStringList DeleteCommandDisabled;
 	QStringList AutoExecDisabled;
 	QStringList TerminateCommandDisabled;
+	QStringList LogonCommandDisabled;
 
 	for (int i = 0; i < ui.treeTriggers->topLevelItemCount(); i++) {
 		QTreeWidgetItem* pItem = ui.treeTriggers->topLevelItem(i);
@@ -610,6 +619,7 @@ void COptionsWindow::SaveAdvanced()
 			case eRecoveryCheck:	RecoveryCheck.append(pItem->text(2)); break;
 			case eDeleteCmd:		DeleteCommand.append(pItem->text(2)); break;
 			case eTerminateCmd:		TerminateCommand.append(pItem->text(2)); break;
+			case eOnLogonCmd:		LogonCommand.append(pItem->text(2)); break;
 			}
 		}
 		else
@@ -622,6 +632,7 @@ void COptionsWindow::SaveAdvanced()
 			case eRecoveryCheck:	RecoveryCheckDisabled.append(pItem->text(2)); break;
 			case eDeleteCmd:		DeleteCommandDisabled.append(pItem->text(2)); break;
 			case eTerminateCmd:		TerminateCommandDisabled.append(pItem->text(2)); break;
+			case eOnLogonCmd:		LogonCommandDisabled.append(pItem->text(2)); break;
 			}
 		}
 	}
@@ -632,6 +643,7 @@ void COptionsWindow::SaveAdvanced()
 	WriteTextList("OnFileRecovery", RecoveryCheck);
 	WriteTextList("OnBoxDelete", DeleteCommand);
 	WriteTextList("OnBoxTerminate", TerminateCommand);
+	WriteTextList("AutoStartOnLogon", LogonCommand);
 
 	WriteTextList("StartProgramDisabled", StartProgramDisabled);
 	WriteTextList("StartServiceDisabled", StartServiceDisabled);
@@ -639,6 +651,7 @@ void COptionsWindow::SaveAdvanced()
 	WriteTextList("OnFileRecoveryDisabled", RecoveryCheckDisabled);
 	WriteTextList("OnBoxDeleteDisabled", DeleteCommandDisabled);
 	WriteTextList("OnBoxTerminateDisabled", TerminateCommandDisabled);
+	WriteTextList("AutoStartOnLogonDisabled", LogonCommandDisabled);
 	//
 
 	WriteAdvancedCheck(ui.chkHideFirmware, "HideFirmwareInfo", "y", "");
@@ -1172,6 +1185,10 @@ void COptionsWindow::AddTriggerItem(const QString& Value, ETriggerAction Type, b
 		case eTerminateCmd:
 			pItem->setText(0, tr("On Terminate"));
 			pItem->setText(1, tr("Run Command"));
+			break;
+		case eOnLogonCmd:
+			pItem->setText(0, tr("On User Logon"));
+			pItem->setText(1, tr("Run Command"));
 	}
 	pItem->setText(2, Value);
 	pItem->setFlags(pItem->flags() | Qt::ItemIsEditable);
@@ -1229,6 +1246,16 @@ void COptionsWindow::OnAddTerminateCmd()
 		return;
 
 	AddTriggerItem(Value, eTerminateCmd);
+	OnAdvancedChanged();
+}
+
+void COptionsWindow::OnAddLogonCmd()
+{
+	QString Value = QInputDialog::getText(this, "Sandboxie-Plus", tr("Please enter the command line for the program to run sandboxed on user logon"), QLineEdit::Normal);
+	if (Value.isEmpty())
+		return;
+
+	AddTriggerItem(Value, eOnLogonCmd);
 	OnAdvancedChanged();
 }
 

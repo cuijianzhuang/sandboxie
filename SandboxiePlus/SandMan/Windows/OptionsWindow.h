@@ -222,6 +222,7 @@ private slots:
 	void OnAddRecoveryCheck();
 	void OnAddDeleteCmd();
 	void OnAddTerminateCmd();
+	void OnAddLogonCmd();
 	void OnDelAuto();
 
 	void OnDumpFW();
@@ -376,7 +377,8 @@ public:
 		eAutoExec,
 		eRecoveryCheck,
 		eDeleteCmd,
-		eTerminateCmd
+		eTerminateCmd,
+		eOnLogonCmd
 	};
 
     enum EAuthMode {

@@ -525,6 +525,7 @@ CSandMan::CSandMan(QWidget *parent)
 
 	m_bConnectPending = false;
 	m_bStopPending = false;
+	m_bAutoStartOnLogonDone = false;
 
 
 	m_pUpdater = new COnlineUpdater(this);
@@ -2996,6 +2997,11 @@ void CSandMan::OnStatusChanged()
 
 		if (theConf->GetBool("Options/AutoRunSoftCompat", true) && g_PendingMessage.isEmpty())
 			CheckCompat(this, "OpenCompat");
+
+		if (QApplication::arguments().contains("-autorun") && !m_bAutoStartOnLogonDone) {
+			m_bAutoStartOnLogonDone = true;
+			QTimer::singleShot(3000, this, SLOT(RunAutoStartOnLogon()));
+		}
 	}
 	else
 	{
@@ -3011,6 +3017,32 @@ void CSandMan::OnStatusChanged()
 	this->setWindowTitle(appTitle);
 
 	UpdateState();
+}
+
+void CSandMan::RunAutoStartOnLogon()
+{
+	if (!theAPI->IsConnected())
+		return;
+
+	QMap<QString, CSandBoxPtr> Boxes = theAPI->GetAllBoxes();
+	for (auto I = Boxes.constBegin(); I != Boxes.constEnd(); ++I)
+	{
+		CSandBoxPtr pBox = I.value();
+		QStringList Commands = pBox->GetTextList("AutoStartOnLogon", false);
+		if (Commands.isEmpty())
+			continue;
+
+		QString BoxName = pBox->GetName();
+		foreach(const QString& Command, Commands)
+		{
+			if (Command.trimmed().isEmpty())
+				continue;
+			OnLogMessage(tr("Auto-starting in sandbox '%1': %2").arg(BoxName).arg(Command));
+			SB_RESULT(quint32) result = RunStart(BoxName, Command);
+			if (result.IsError())
+				OnLogMessage(tr("Failed to auto-start '%1' in sandbox '%2': %3").arg(Command).arg(BoxName).arg(FormatError(result)), true);
+		}
+	}
 }
 
 void CSandMan::CheckCompat(QObject* receiver, const char* member)
