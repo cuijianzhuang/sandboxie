@@ -309,6 +309,7 @@ void CSbieView::CreateMenu()
 		m_pMenuMarkLeader = m_pMenuPreset->addAction(tr("Set Leader Process"), this, SLOT(OnProcessAction()));
 		m_pMenuMarkLeader->setCheckable(true);
 		m_pMenuAutoStartOnLogon = m_pMenuPreset->addAction(tr("Auto-start on Logon"), this, SLOT(OnProcessAction()));
+		m_pMenuAutoStartOnLogon->setCheckable(true);
 	m_pMenuSuspend = m_pMenuProcess->addAction(tr("Suspend"), this, SLOT(OnProcessAction()));
 	m_pMenuResume = m_pMenuProcess->addAction(tr("Resume"), this, SLOT(OnProcessAction()));
 }
@@ -772,6 +773,20 @@ void CSbieView::UpdateProcMenu(const CBoxedProcessPtr& pProcess, int iProcessCou
 		m_pMenuMarkLinger->setChecked(isLingering != 0);
 		m_pMenuMarkLinger->setEnabled(isLingering != 2);
 		m_pMenuMarkLeader->setChecked(pProcess.objectCast<CSbieProcess>()->IsLeaderProgram());
+
+		QStringList AutoStartEntries = pBoxPlus->GetTextList("AutoStartOnLogon", false);
+		QString AutoStartFileName = pProcess->GetFileName();
+		QString FoundAutoStart;
+		foreach(const QString& Entry, AutoStartEntries) {
+			QString EntryCmd = Entry.split("|").value(0);
+			QString EntryFile = pBoxPlus->GetCommandFile(EntryCmd);
+			if (EntryFile.compare(AutoStartFileName, Qt::CaseInsensitive) == 0) {
+				FoundAutoStart = Entry;
+				break;
+			}
+		}
+		m_pMenuAutoStartOnLogon->setChecked(!FoundAutoStart.isEmpty());
+		m_pMenuAutoStartOnLogon->setData(FoundAutoStart);
 	}
 
 	if (m_pMenuSuspend) m_pMenuSuspend->setEnabled(iProcessCount > iSuspendedCount);
@@ -2066,8 +2081,13 @@ void CSbieView::OnProcessAction(QAction* Action, const QList<CBoxedProcessPtr>& 
 		else if (Action == m_pMenuAutoStartOnLogon)
 		{
 			CSandBoxPlus* pBoxPlus = pProcess.objectCast<CSbieProcess>()->GetBox();
-			QString Command = pBoxPlus->MakeBoxCommand(pProcess->GetFileName());
-			pBoxPlus->AppendText("AutoStartOnLogon", Command);
+			if (m_pMenuAutoStartOnLogon->isChecked())
+			{
+				QString Command = pBoxPlus->MakeBoxCommand(pProcess->GetFileName());
+				pBoxPlus->AppendText("AutoStartOnLogon", Command);
+			}
+			else if (!m_pMenuAutoStartOnLogon->data().toString().isEmpty())
+				pBoxPlus->DelValue("AutoStartOnLogon", m_pMenuAutoStartOnLogon->data().toString());
 		}
 		else if (Action == m_pMenuSuspend)
 			Results.append(pProcess->SetSuspended(true));
